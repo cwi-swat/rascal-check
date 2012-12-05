@@ -9,13 +9,6 @@ import lang::java::jdt::JDT;
 
 import RascalInformation;
 
-public void main() {
-	println("Checking for incorrect URI usage");
-	verifyNoURICreateCalls();
-	verifyNoURIConstructorCalls();
-}
-
-
 public test bool verifyNoURICreateCalls() {
 	Resource dt = getRascalResources();
 	uriCalls = { f | <f,t> <- dt@calls

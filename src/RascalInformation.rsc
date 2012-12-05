@@ -13,6 +13,7 @@ private Maybe[set[AstNode]] adts = nothing();
 
 public Resource getRascalResources() {
 	if (resources == nothing()) {
+		println("Getting rascal JDT information, this can take a while (plus quite some memory)");
 		resources = just(unionFacts(extractProject(|project://rascal/|), extractProject(|project://rascal-eclipse|)));
 	}
 	return resources.val; 
@@ -20,6 +21,7 @@ public Resource getRascalResources() {
 
 public set[AstNode] getRascalAdts() {
 	if (adts == nothing()) {
+		println("Getting rascal AST information, this can take a while (plus quite some memory)");
 		adts = just({createAstsFromProject(|project://rascal/|), createAstsFromProject(|project://rascal-eclipse|)});
 	}
 	return adts.val;
