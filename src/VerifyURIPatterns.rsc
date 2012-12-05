@@ -8,6 +8,7 @@ import lang::java::jdt::JavaADT;
 import lang::java::jdt::JDT;
 
 import RascalInformation;
+import UnitTestAdditions;
 
 public test bool verifyNoURICreateCalls() {
 	Resource dt = getRascalResources();
@@ -31,14 +32,3 @@ public test bool verifyNOURLEncoderUsed() {
 	invalidUsage = { f | <f,t> <- dt@calls, entity([package("java"), package("net"), class("URLEncoder"),_*]) := t};
 	return assertIsEmpty(invalidUsage, "The URLEncoder should not be used, except for encoding values of the query part of an URL");
 }
-
-private bool assertIsEmpty(set[Entity] ents, str message) {
-	if (size(ents) == 0) {
-		return true;
-	}
-	println(message);
-	for (e <- ents) {
-		println("\t" + readable(e));
-	}
-	return false;
-} 
