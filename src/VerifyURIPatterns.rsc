@@ -21,14 +21,7 @@ public test bool verifyNoURICreateCalls() {
 	uriCalls = { f | <f,t> <- dt@calls
 		, entity([package("java"), package("net"), class("URI"), method("create", _, _)]) := t
 		, entity([package("org"),package("rascalmpl"),package("uri"),class("URIUtil"), _*]) !:= f};
-	if (size(uriCalls) > 0 ) {
-		println("The following methods use URI.create but should use the correct org.rascalmpl.uri.URIUtil method");
-		for (c <- uriCalls) {
-			println("\t" + readable(c));
-		}
-		return false;
-	}
-	return true;
+	return assertIsEmpty(uriCalls, "The following methods use URI.create but should use the correct org.rascalmpl.uri.URIUtil method");
 }
 
 
@@ -37,12 +30,22 @@ public test bool verifyNoURIConstructorCalls() {
 	uriCalls = { f | <f,t> <- dt@calls
 		, entity([package("java"), package("net"), class("URI"), constr(_)]) := t
 		, entity([package("org"),package("rascalmpl"),package("uri"),class("URIUtil"),_*]) !:= f};
-	if (size(uriCalls) > 0 ) {
-		println("The following methods use new URI() but should use the correct org.rascalmpl.uri.URIUtil method");
-		for (c <- uriCalls) {
-			println("\t" + readable(c));
-		}
-		return false;
-	}
-	return true;
+	return assertIsEmpty(uriCalls, "The following methods use new URI() but should use the correct org.rascalmpl.uri.URIUtil method");
 }
+
+public test bool verifyNOURLEncoderUsed() {
+	Resource dt = getRascalResources();
+	invalidUsage = { f | <f,t> <- dt@calls, entity([package("java"), package("net"), class("URLEncoder"),_*]) := t};
+	return assertIsEmpty(invalidUsage, "The URLEncoder should not be used, except for encoding values of the query part of an URL");
+}
+
+private bool assertIsEmpty(set[Entity] ents, str message) {
+	if (size(ents) == 0) {
+		return true;
+	}
+	println(message);
+	for (e <- ents) {
+		println("\t" + readable(e));
+	}
+	return false;
+} 
