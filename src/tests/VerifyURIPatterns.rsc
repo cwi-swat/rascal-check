@@ -29,6 +29,9 @@ public test bool verifyNoURIConstructorCalls() {
 
 public test bool verifyNOURLEncoderUsed() {
 	Resource dt = getRascalResources();
-	invalidUsage = { f | <f,t> <- dt@calls, entity([package("java"), package("net"), class("URLEncoder"),_*]) := t};
+	invalidUsage = { f | <f,t> <- dt@calls, entity([package("java"), package("net"), class("URLEncoder"),_*]) := t
+		, entity([_*,class("NonRascalMenuContributionItem"),method("encodeLabel",_,_), _*]) !:= f
+		, entity([_*,class("Resource"),method("uriEncode",_,_), _*]) !:= f
+	};
 	return assertIsEmpty(invalidUsage, "The URLEncoder should not be used, except for encoding values of the query part of an URL");
 }
