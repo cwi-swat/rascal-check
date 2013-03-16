@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: rascal_check
 Bundle-SymbolicName: rascal_check
-Bundle-Version: 1.0.0
+Bundle-Version: 0.1.0.qualifier
 Require-Bundle: org.eclipse.imp.pdb.values,
  rascal,
  rascal_eclipse,
