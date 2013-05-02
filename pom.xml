@@ -59,8 +59,6 @@
 	  <argLine>
 	    -Xmx1g
 	    -Xss128m
-	       -Xdebug
-            -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=y
 	  </argLine>				
 	  <includes>
 	    <include>**/JUnitRunner.java</include>
