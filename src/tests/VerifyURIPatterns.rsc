@@ -7,7 +7,7 @@ import tests::RascalInformation;
 
 public test bool verifyNoURICreateCalls() 
   = requireEmpty({ f | <f,t> <- getRascalM3()@methodInvocation, 
-                   |java+method:///java/net/URI/create(java.lang.String)| := t,
+                   |java+method:///java/net/URI/create(java.lang.String)| == t,
 			       /org.rascalmpl.uri.URIUtil/ !:= f.path }
 			    , "illegal call to URI.create, should use URIUtil");
 

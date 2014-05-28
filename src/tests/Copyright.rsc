@@ -2,6 +2,7 @@ module tests::Copyright
 
 import tests::RascalInformation;
 import List;
+import IO;
 
 str copyright = "/*******************************************************************************
                 ' * Copyright (c) 2009-2013 CWI

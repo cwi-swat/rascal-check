@@ -10,8 +10,6 @@ import util::FileSystem;
 import analysis::m3::Core;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
 
 // this is an Eclipse dependency which we should try to remove
 import lang::java::jdt::Project;
