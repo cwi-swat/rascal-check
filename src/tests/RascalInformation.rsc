@@ -5,41 +5,58 @@ import Set;
 import ValueIO;
 import String;
 import util::Maybe;
-import util::Resources;
-import lang::java::jdt::Java;
-import lang::java::jdt::JavaADT;
-import lang::java::jdt::JDT;
+import util::FileSystem;
 
-private Maybe[Resource] resources = nothing();
-private Maybe[set[AstNode]] adts = nothing();
+import analysis::m3::Core;
+import lang::java::m3::Core;
+import lang::java::m3::AST;
+import lang::java::m3::Core;
+import lang::java::m3::AST;
 
-public void resetRascalInformation() {
-	resources = nothing();
-	adts = nothing();
+// this is an Eclipse dependency which we should try to remove
+import lang::java::jdt::Project;
+    
+private set[loc] projects = {|project://rascal/|, |project://rascal-eclipse|};
+
+bool requireEmpty({}, str _) = true;
+default bool requireEmpty(set[value] s, str message) {
+  println("<for (e <- s) {><message>: <e>
+          '<}>");
+  return false;
 }
 
-private bool isGeneratedFile(loc f)
-	= startsWith(f.path, "/src/org/rascalmpl/library/lang/rascal/syntax")
-	;
-
-private set[Resource] getRascalFiles() {
-	Resource rascal = getProject(|project://rascal/|);
-	Resource eclipse = getProject(|project://rascal-eclipse/|);
-	return { f | /f:file(fid) <- {rascal, eclipse}, fid.extension == "java", isOnBuildPath(fid), !isGeneratedFile(fid)};
+bool init() {
+  classPaths = { *classPathForProject(p) | p <- projects} + {|project://pdb.values/bin|};
+  sourcePaths = { p + "src" | p <- projects};
+  
+  println("classpath: <classPaths>");
+  println("sources: <sourcePaths>");
+  
+  setEnvironmentOptions(classPaths, sourcePaths);
+  return true; 
 }
 
-public Resource getRascalResources() {
-	if (resources == nothing()) {
-		println("Getting rascal JDT information, this can take a while (plus quite some memory)");
-		resources = just((getProject(|project://rascal/|) | unionFacts(it, extractClass(r.id, gatherASTs = false, fillASTBindings = false, fillOldStyleUsage = false)) | r <- getRascalFiles()));
-	}
-	return resources.val; 
-}
+bool isGenerated(loc l)
+  = /lang.rascal.syntax.*\.java/ := l.path;
+  
+bool isInteresting(loc l) 
+  = (l.extension == "java" || l.extension == "rsc")
+  && !isGenerated(l);
 
-public set[AstNode] getRascalAdts() {
-	if (adts == nothing()) {
-		println("Getting rascal AST information, this can take a while (plus quite some memory)");
-		adts = just({createAstsFromProject(|project://rascal/|), createAstsFromProject(|project://rascal-eclipse|)});
-	}
-	return adts.val;
+@memo
+set[loc] getRascalFiles() = {*find(d, isInteresting) | d <- projects};
+
+@memo
+M3 getRascalM3() {
+  init();
+  M3 result = m3(|rascal:///|);
+  for (sp <- { p + "src" | p <- projects}) {
+    result = composeJavaM3(|rascal:///|, { createM3FromFile(f) | loc f <- find(sp, "java"), bprintln(f) });
+  }
+  return result;
 }
+  
+@memo
+set[Declaration] getRascalAdts() 
+  = { createAstFromFile(f, true) | init(), d <- projects, loc f <- find(d, "java"), bprintln(f) };
+
