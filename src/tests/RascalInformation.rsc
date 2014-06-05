@@ -6,8 +6,11 @@ import ValueIO;
 import String;
 import util::Maybe;
 import util::FileSystem;
+import util::Monitor;
+import List;
 
 import analysis::m3::Core;
+import analysis::m3::Registry;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 
@@ -44,13 +47,19 @@ bool isInteresting(loc l)
 @memo
 set[loc] getRascalFiles() = {*find(d, isInteresting) | d <- projects};
 
-@memo
+private bool done(loc f) {
+  event("<f>");
+  return true;
+}
+
+@Memo
 M3 getRascalM3() {
   init();
-  M3 result = m3(|rascal:///|);
-  for (sp <- { p + "src" | p <- projects}) {
-    result = composeJavaM3(|rascal:///|, { createM3FromFile(f) | loc f <- find(sp, "java"), bprintln(f) });
-  }
+  fs =  [ f | sp <- { p + "src" | p <- projects}, loc f <- find(sp, "java") ];
+  startJob("Analyzing Java files", size(fs));
+  m3s = { createM3FromFile(f) | f <- fs, done(f) };
+  result = composeJavaM3(|rascal:///|, m3s);
+  registerProject(|rascal:///|, result);
   return result;
 }
   
