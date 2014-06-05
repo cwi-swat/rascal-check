@@ -52,7 +52,7 @@ private bool done(loc f) {
   return true;
 }
 
-@Memo
+@memo
 M3 getRascalM3() {
   init();
   fs =  [ f | sp <- { p + "src" | p <- projects}, loc f <- find(sp, "java") ];
