@@ -9,7 +9,7 @@ set[loc] exceptions = {
 };
 
 public test bool checkGetInputStreamIsAvoided() 
-  = requireEmpty({ f | <f,t> <- getRascalM3@methodInvocation,
+  = requireEmpty({ f | <f,t> <- getRascalM3()@methodInvocation,
                  t.scheme == "java+method",
                  /getInputStream(.*)/ := t.path} - exceptions, 
                  "use getCharacterReader instead of getInputStream to avoid encoding problems");
