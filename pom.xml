@@ -78,12 +78,12 @@
     <dependency>
       <groupId>org.rascalmpl</groupId>
       <artifactId>rascal</artifactId>
-      <version>0.6.3.qualifier</version>
+      <version>0.7.0.qualifier</version>
     </dependency>
     <dependency>
       <groupId>org.rascalmpl</groupId>
       <artifactId>rascal_eclipse</artifactId>
-      <version>0.6.3.qualifier</version>
+      <version>0.7.0.qualifier</version>
     </dependency>
   </dependencies>
 
