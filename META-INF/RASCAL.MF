@@ -1,0 +1,1 @@
+Require-Bundles: rascal-java-build-manager
