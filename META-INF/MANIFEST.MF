@@ -5,6 +5,6 @@ Bundle-SymbolicName: rascal_check
 Bundle-Version: 0.1.0.qualifier
 Require-Bundle: org.eclipse.imp.pdb.values,
  rascal,
- rascal_eclipse,
- org.junit
+ org.junit,
+ rascal_java_build_manager
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

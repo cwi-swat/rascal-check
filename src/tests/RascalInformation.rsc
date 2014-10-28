@@ -13,27 +13,24 @@ import analysis::m3::Core;
 import analysis::m3::Registry;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
-
-// this is an Eclipse dependency which we should try to remove
-import lang::java::jdt::Project;
-    
-private set[loc] projects = {|project://rascal/|, |project://rascal-eclipse|};
-
+import lang::java::m3::ClassPaths;
+       
 bool requireEmpty({}, str _) = true;
+
 default bool requireEmpty(set[value] s, str message) {
   println("<for (e <- s) {><message>: <e>
           '<}>");
   return false;
 }
 
-bool init() {
-  classPaths = { *classPathForProject(p) | p <- projects} + {|project://pdb.values/bin|};
-  sourcePaths = { p + "src" | p <- projects};
+bool init(loc workspace = |file:///ufs/daybuild/jenkins/workspace| /* on lille.sen.cwi.nl */) {
+  cp          = getClassPath(workspace);
+  sourcePaths = { p + "src" | p <- workspace.ls, isDirectory(p)};
   
-  println("classpath: <classPaths>");
-  println("sources: <sourcePaths>");
+  println("classpath: <cp>");
+  println("sources  : <sourcePaths>");
   
-  setEnvironmentOptions(classPaths, sourcePaths);
+  setEnvironmentOptions(cp, sourcePaths);
   return true; 
 }
 
